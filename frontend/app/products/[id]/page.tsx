@@ -69,6 +69,17 @@ export default function ProductDetailPage() {
     return <div className="p-8 text-error">Error loading owner: {ownerError.message}</div>;
   }
 
+  // Product ID 0 in the returned struct means the product doesn't exist on-chain
+  if (productData && Number(productData[0]) === 0) {
+    return (
+      <div className="animate-page max-w-5xl mx-auto p-8 text-center">
+        <Package className="w-16 h-16 mx-auto mb-4 text-text-muted opacity-50" />
+        <h1 className="text-2xl font-bold mb-2">Product #{productId} Not Found</h1>
+        <p className="text-text-muted">This product does not exist on-chain. It may not have been created yet.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="animate-page space-y-6 max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
