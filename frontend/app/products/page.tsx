@@ -30,8 +30,9 @@ export default function ProductsPage() {
       setShowForm(false);
       // Reset form
       setName(""); setDescription(""); setPrice(""); setQuantity(""); setImageHash("");
-    } catch (err: any) {
-      toast.error(err.shortMessage || err.message || "Failed to create product");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to create product";
+      toast.error(message);
     }
   };
 

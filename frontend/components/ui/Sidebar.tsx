@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LayoutDashboard, Package, Map, Settings, BarChart2, ActivitySquare } from 'lucide-react';
+import { LayoutDashboard, Package, Map, Settings, BarChart2, ActivitySquare } from 'lucide-react';
 import clsx from 'clsx';
 
 export function Sidebar() {

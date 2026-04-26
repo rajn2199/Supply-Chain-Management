@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Search, MapPin, PackageCheck, Truck, Factory, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Search, PackageCheck, ShieldCheck, AlertTriangle } from 'lucide-react';
 import clsx from 'clsx';
 import { useProductHistory } from '@/hooks/useProductHistory';
 import { formatAddress, formatDate } from '@/lib/utils';
@@ -59,7 +59,7 @@ export default function TrackPage() {
         </div>
       </form>
 
-      {productData && productData[0] !== 0n && (
+      {productData && productData[0] !== BigInt(0) && (
         <div className="mt-12 animate-page">
           <div className="glass-panel p-6 md:p-8 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
@@ -93,7 +93,7 @@ export default function TrackPage() {
               <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-border"></div>
               
               <div className="space-y-8">
-                {history && history.map((step: any, idx: number) => (
+                {history && history.map((step: { notes: string; location: string; from: string; timestamp: bigint }, idx: number) => (
                   <div key={idx} className="relative flex gap-6 items-start animate-slide-in-left" style={{ animationDelay: `${idx * 150}ms` }}>
                     <div className={clsx(
                       "relative z-10 w-14 h-14 rounded-full flex items-center justify-center shrink-0 border-4 border-surface",

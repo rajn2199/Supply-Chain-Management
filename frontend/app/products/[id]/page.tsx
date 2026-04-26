@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { ShieldCheck, MapPin, Package, User, Clock, QrCode } from 'lucide-react';
+import { ShieldCheck, Package, User, Clock, QrCode } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEnsName, useReadContract } from 'wagmi';
 import { SUPPLY_CHAIN_ABI, SUPPLY_CHAIN_ADDRESS } from '@/lib/contracts';
@@ -49,17 +49,10 @@ export default function ProductDetailPage() {
     try {
       await transferOwnership(Number(productId), newOwner, transferLocation, transferNotes);
       toast.success("Transfer submitted!");
-    } catch (err: any) {
-      toast.error(err.shortMessage || err.message || "Failed to transfer");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to transfer";
+      toast.error(message);
     }
-  };
-
-  const handleVerify = () => {
-    setIsVerifying(true);
-    setTimeout(() => {
-      setIsVerifying(false);
-      setIsVerified(true);
-    }, 2000);
   };
 
   if (productError) {
@@ -126,7 +119,7 @@ export default function ProductDetailPage() {
             </h3>
             <div className="space-y-6">
               {history && history.length > 0 ? (
-                <Timeline steps={history.map((h: any) => ({
+                <Timeline steps={history.map((h: { notes: string; location: string; from: string; to: string; timestamp: bigint }) => ({
                   title: h.notes,
                   description: `${h.location} • From: ${formatAddress(h.from)} To: ${formatAddress(h.to)}`,
                   date: formatDate(h.timestamp.toString()),
