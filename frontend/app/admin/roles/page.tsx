@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Shield, Plus, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 import { useWriteContract, useReadContract, useAccount, useWatchContractEvent } from 'wagmi';
 import { SUPPLY_CHAIN_ABI, SUPPLY_CHAIN_ADDRESS } from '@/lib/contracts';
@@ -24,10 +24,15 @@ interface GrantedRole {
 }
 
 export default function RolesPage() {
+  const [mounted, setMounted] = useState(false);
   const [address, setAddress] = useState("");
   const [role, setRole] = useState<string>("MANUFACTURER");
   const [grantedRoles, setGrantedRoles] = useState<GrantedRole[]>([]);
   const { address: connectedAddress } = useAccount();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { writeContract, isPending } = useWriteContract();
 
@@ -42,7 +47,7 @@ export default function RolesPage() {
     ],
     chainId: 31337,
     query: {
-      enabled: !!connectedAddress,
+      enabled: mounted && !!connectedAddress,
     }
   });
 
@@ -133,7 +138,7 @@ export default function RolesPage() {
       <div>
         <h1 className="text-3xl font-bold mb-2">Role Management</h1>
         <p className="text-text-muted">Admin panel for managing access control.</p>
-        {connectedAddress && (
+        {mounted && connectedAddress && (
           <div className={`mt-2 flex items-center gap-2 text-sm ${isAdmin ? 'text-success' : 'text-warning'}`}>
             {isAdmin ? (
               <><CheckCircle2 className="w-4 h-4" /> You have Admin privileges</>

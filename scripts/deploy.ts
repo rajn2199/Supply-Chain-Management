@@ -1,8 +1,7 @@
 import hre from "hardhat";
 
 async function main() {
-  console.log(Object.keys(hre));
-  const ethers = hre.ethers;
+  const { ethers } = await hre.network.connect();
 
   console.log("Deploying SupplyChain...");
 

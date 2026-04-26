@@ -1,10 +1,40 @@
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { createConfig, http } from 'wagmi';
 import { mainnet, sepolia, polygon, hardhat } from 'wagmi/chains';
-import { http } from 'wagmi';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 
-export const config = getDefaultConfig({
-  appName: 'Supply Chain DApp',
-  projectId: '3c8b41cd88bb3e660e521dfb689a9f24',
+const appName = 'Supply Chain DApp';
+const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? 'local-dev-project-id';
+type WalletFactoryParams = {
+  projectId: string;
+  walletConnectParameters?: Parameters<typeof walletConnectWallet>[0]['options'];
+};
+
+const walletList = [
+  {
+    groupName: 'Recommended',
+    wallets: [
+      metaMaskWallet,
+      (_params: WalletFactoryParams) => injectedWallet(),
+      ...(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+        ? [
+            (params: WalletFactoryParams) =>
+              walletConnectWallet({
+                projectId: params.projectId,
+                options: params.walletConnectParameters,
+              }),
+          ]
+        : []),
+    ],
+  },
+];
+
+const connectors = connectorsForWallets(walletList, {
+  appName,
+  projectId: walletConnectProjectId,
+});
+
+export const config = createConfig({
   chains: [
     mainnet,
     sepolia,
@@ -19,6 +49,7 @@ export const config = getDefaultConfig({
       },
     },
   ],
+  connectors,
   transports: {
     [mainnet.id]:  http(),
     [sepolia.id]:  http(),

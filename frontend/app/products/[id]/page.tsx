@@ -10,8 +10,15 @@ import { useSupplyChain } from '@/hooks/useSupplyChain';
 import { TxButton } from '@/components/web3/TxButton';
 import toast from 'react-hot-toast';
 import { formatDate, formatAddress } from '@/lib/utils';
-import { formatEther } from 'viem';
 import { Timeline } from '@/components/supply-chain/Timeline';
+
+const STATUS_LABELS: Record<number, string> = {
+  0: 'Created',
+  1: 'In Transit',
+  2: 'In Warehouse',
+  3: 'Delivered',
+  4: 'Rejected',
+};
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -94,12 +101,12 @@ export default function ProductDetailPage() {
                 <p className="font-medium">{productData ? productData[1] : "..."}</p>
               </div>
               <div>
-                <p className="text-sm text-text-muted mb-1">Status Code</p>
-                <p className="font-medium text-warning">{productData ? productData[7].toString() : "..."}</p>
+                <p className="text-sm text-text-muted mb-1">Status</p>
+                <p className="font-medium text-warning">{productData ? (STATUS_LABELS[Number(productData[7])] ?? productData[7].toString()) : "..."}</p>
               </div>
               <div>
                 <p className="text-sm text-text-muted mb-1">Price</p>
-                <p className="font-medium">${productData ? formatEther(productData[4]) : "..."}</p>
+                <p className="font-medium">{productData ? `$${Number(productData[4]).toLocaleString()}` : "..."}</p>
               </div>
               <div>
                 <p className="text-sm text-text-muted mb-1">Quantity</p>
